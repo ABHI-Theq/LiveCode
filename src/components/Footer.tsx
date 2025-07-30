@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Github as LucideGithub}  from "lucide-react";
+import {FaGithub} from "react-icons/fa"
 import Image from "next/image";
 
 interface ProjectLink {
@@ -15,7 +15,7 @@ interface ProjectLink {
   const socialLinks = [
     {
       href: "#",
-      icon: <LucideGithub className="w-5 h-5 text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors" />,
+      icon: <FaGithub className="w-5 h-5 text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors" />,
     },
    
   ];
