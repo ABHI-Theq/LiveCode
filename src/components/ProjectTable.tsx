@@ -78,11 +78,13 @@ const ProjectTable = ({projects,onDeleteProject,onUpdateProject,onDuplicateProje
     <div className="border rounded-lg overflow-hidden">
         <Table>
             <TableHeader>
+              <TableRow>
             <TableHead>Project</TableHead>
             <TableHead>Template</TableHead>
             <TableHead>Created</TableHead>
             <TableHead>User</TableHead>
             <TableHead className="w-[50px]">Actions</TableHead>
+            </TableRow>
             </TableHeader>
             <TableBody>
                 {

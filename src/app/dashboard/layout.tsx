@@ -18,7 +18,7 @@ const DashboardLayout=async ({children}:{children:React.ReactNode})=>{
     const formattedPlaygroundData=playgroundData?.map((playground)=>({
         id:playground.id,
         name:playground.title,
-        starred:playground.starmark?.[0].isMarked || false,
+        starred:playground.starmark?.[0]?.isMarked || false,
         icon:techIconMap[playground.template] || "Code2"
         
     })) || []
