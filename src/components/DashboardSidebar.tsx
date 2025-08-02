@@ -57,6 +57,7 @@ const lucideIconMap: Record<string, LucideIcon> = {
   // Add any other icons you might use dynamically
 }
 
+
  const DashboardSidebar=({ initialPlaygroundData }: { initialPlaygroundData: PlaygroundData[] })=>{
   const pathname = usePathname()
   const [starredPlaygrounds, setStarredPlaygrounds] = useState(initialPlaygroundData.filter((p) => p.starred))
