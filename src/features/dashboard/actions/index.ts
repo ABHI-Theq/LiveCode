@@ -81,6 +81,7 @@ export const editProjectById=async (id:string,data:{title:string,description:str
             },
             data:data
         })
+        revalidatePath("/dashboard")
     } catch (error) {
         console.error(error)
     }
