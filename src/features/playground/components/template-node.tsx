@@ -174,7 +174,7 @@ const TemplateNode = ({
                             </DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>
-                </div>
+                </div> 
                 <RenameFileDialog
           isOpen={isRenameDialogOpen}
           onClose={() => setIsRenameDialogOpen(false)}

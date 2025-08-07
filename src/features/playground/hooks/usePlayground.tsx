@@ -17,7 +17,7 @@ interface UsePlaygroundReturn{
     isLoading:boolean,
     error:string | null,
     loadPlayground:()=>Promise<void>,
-    saveTemplateData:(data:TemplateFolder)=>Promise<void>
+    saveTemplateData:(data:TemplateFolder)=>Promise<any>
 
 }
 
@@ -77,6 +77,7 @@ export const usePlayground=(id:string):UsePlaygroundReturn=>{
             await SaveUpdatedCode(id,data)
             setTemplateData(data)
             toast.success("Changes Saved Successufully")
+            return templateData
         } catch (error) {
          toast.error("Failed to load")
          throw error;   

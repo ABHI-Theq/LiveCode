@@ -256,13 +256,13 @@ const WebContainerPreview = ({ templateData, serverUrl, isLoading, error, instan
       {
         !previewUrl ? (
           <div className='h-full flex flex-col'>
-            <div className='h-full max-w-md p-6 m-5 rounded-lg bg-white dark:bg-zinc-800 shadow-sm mx-auto'>
+            <div className='max-h-lg  max-w-md p-6 m-5 rounded-lg bg-white dark:bg-zinc-800 shadow-sm mx-auto'>
               <h3 className='text-lg font-medium mb-4'>
                 Setting up your environment
               </h3>
               <Progress
                 value={(currentStep / totalSteps) * 100}
-                className="h-2 mb-6"
+                className="h-2 mb-6 bg-white text-white"
               />
 
               <div className="space-y-4 mb-6">
@@ -285,7 +285,7 @@ const WebContainerPreview = ({ templateData, serverUrl, isLoading, error, instan
               </div>
             </div>
 
-            <div className='flex-1 p-4'>
+            <div className=' h-64 flex-1 p-4'>
               <TerminalComponent
               ref={terminalRef}
               webContainerInstance={instance}
