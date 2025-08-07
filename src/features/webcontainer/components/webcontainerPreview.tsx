@@ -1,14 +1,15 @@
 import { TemplateFolder } from '@/features/playground/lib/path-to-json'
 import { WebContainer } from '@webcontainer/api'
-import React, { use, useEffect, useState } from 'react'
+import React, { use, useEffect, useRef, useState } from 'react'
 import { set } from 'zod';
 import { transformToWebContainerFormat } from '../hooks/transformer';
 import { CheckCircle, Loader2, XCircle } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
+import TerminalComponent from './terminal';
 
 interface WebContainerPreviewProps {
   serverUrl: string,
-  templateData: TemplateFolder ,
+  templateData: TemplateFolder,
   isLoading: boolean,
   error: string | null,
   instance: WebContainer | null,
@@ -32,6 +33,7 @@ const WebContainerPreview = ({ templateData, serverUrl, isLoading, error, instan
   const [isSetupComplete, setIsSetupComplete] = useState<boolean>(false)
   const [isSetupInProgress, setIsSetupInProgress] = useState<boolean>(false)
 
+  const terminalRef = useRef<any>(null)
   useEffect(() => {
     if (forceResetup) {
       setIsSetupComplete(false)
@@ -60,9 +62,15 @@ const WebContainerPreview = ({ templateData, serverUrl, isLoading, error, instan
           const packageJsonexists = await instance.fs.readFile("package.json", "utf8")
           if (packageJsonexists) {
             //terminal related funcs
+            if (terminalRef.current?.writeToTerminal) {
+              terminalRef.current.writeToTerminal("🔄 Reconnecting to existing WebContainer session...\r\n");
+            }
             //@ts-ignore
             instance.on("server-ready", (port: string, url: string) => {
               console.log(`Reconnected to server on port ${port} at ${url}`);
+              if (terminalRef.current?.writeToTerminal) {
+                terminalRef.current.writeToTerminal(`🌐 Reconnected to server at ${url}\r\n`);
+              }
 
               setPreviewUrl(url)
               setLoadingstate((prev) => ({ ...prev, starting: false, ready: true }))
@@ -84,15 +92,27 @@ const WebContainerPreview = ({ templateData, serverUrl, isLoading, error, instan
 
         setLoadingstate((prev) => ({ ...prev, transforming: true }))
         setCurrentStep(1)
+
+        if (terminalRef.current?.writeToTerminal) {
+          terminalRef.current.writeToTerminal(`Transforming related data...\r\n`);
+        }
+
         //@ts-ignore
         const files = transformToWebContainerFormat(templateData)
         setLoadingstate((prev) => ({ ...prev, transforming: false, mounting: true }))
         setCurrentStep(2)
 
+        if (terminalRef.current?.writeToTerminal) {
+          terminalRef.current.writeToTerminal(`📂Mounting files to webcontainer...\r\n`);
+        }
+
         await instance.mount(files)
 
         setLoadingstate((prev) => ({ ...prev, mounting: false, installing: true }))
         setCurrentStep(3)
+        if (terminalRef.current?.writeToTerminal) {
+          terminalRef.current.writeToTerminal(` 📦 Installing Dependencies...\r\n`);
+        }
 
         const installProcess = await instance.spawn("npm", ["install"])
 
@@ -100,6 +120,9 @@ const WebContainerPreview = ({ templateData, serverUrl, isLoading, error, instan
           new WritableStream({
             write(data) {
               //write direclty to terminal
+              if (terminalRef?.current?.writeToTerminal) {
+                terminalRef.current.writeToTerminal(data.toString())
+              }
             }
           })
         )
@@ -110,6 +133,10 @@ const WebContainerPreview = ({ templateData, serverUrl, isLoading, error, instan
           throw new Error(`Failed to installd dependencies.Exit Code: ${installExitCode}`)
         }
 
+        if (terminalRef.current?.writeToTerminal) {
+          terminalRef.current.writeToTerminal(`✅ Dependencies installed successfully...\r\n`);
+        }
+
         setLoadingstate((prev) => ({ ...prev, installing: false, starting: true }))
         setCurrentStep(4)
 
@@ -118,6 +145,9 @@ const WebContainerPreview = ({ templateData, serverUrl, isLoading, error, instan
         // Listen for server ready event
         instance.on("server-ready", (port: number, url: string) => {
           console.log(`Server ready on port ${port} at ${url}`);
+          if (terminalRef.current?.writeToTerminal) {
+            terminalRef.current.writeToTerminal(`🌐 Server ready at ${url}...\r\n`);
+          }
 
           setPreviewUrl(url);
           setLoadingstate((prev) => ({
@@ -133,7 +163,9 @@ const WebContainerPreview = ({ templateData, serverUrl, isLoading, error, instan
         startProcess.output.pipeTo(
           new WritableStream({
             write(data) {
-
+              if (terminalRef?.current?.writeToTerminal) {
+                terminalRef.current.writeToTerminal(data.toString())
+              }
             },
           })
         );
@@ -141,7 +173,9 @@ const WebContainerPreview = ({ templateData, serverUrl, isLoading, error, instan
       } catch (err) {
         console.error("Error setting up container:", err);
         const errorMessage = err instanceof Error ? err.message : String(err);
-
+         if(terminalRef?.current?.writeToTerminal){
+                terminalRef.current.writeToTerminal(`❌Error: ${errorMessage}\r\n`);
+              }
 
         setSetupError(`12 ${errorMessage}`);
         setIsSetupInProgress(false);
@@ -209,8 +243,8 @@ const WebContainerPreview = ({ templateData, serverUrl, isLoading, error, instan
 
     return (
       <span className={`text-sm font-medium ${isComplete ? 'text-green-600' :
-          isActive ? 'text-blue-600' :
-            'text-gray-500'
+        isActive ? 'text-blue-600' :
+          'text-gray-500'
         }`}>
         {label}
       </span>
@@ -252,17 +286,27 @@ const WebContainerPreview = ({ templateData, serverUrl, isLoading, error, instan
             </div>
 
             <div className='flex-1 p-4'>
-              <h1>Terminal</h1>
+              <TerminalComponent
+              ref={terminalRef}
+              webContainerInstance={instance}
+              theme='dark'
+              className='h-full'
+              />
             </div>
           </div>
         ) : (
           <div className='h-full flex flex-col'>
             <div className='flex-1'>
-            <iframe src={previewUrl} className='w-full h-full border-none' title="WebContainer Preview"/>
+              <iframe src={previewUrl} className='w-full h-full border-none' title="WebContainer Preview" />
             </div>
 
             <div className='h-64 border-t'>
-            <h1>Terminal Component</h1>
+              <TerminalComponent
+              ref={terminalRef}
+              webContainerInstance={instance}
+              theme='dark'
+              className='h-full'
+              />
             </div>
           </div>
         )
