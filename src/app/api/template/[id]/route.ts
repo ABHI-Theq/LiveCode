@@ -11,7 +11,7 @@ const validateJsonStructure=(data:unknown)=>{
         JSON.parse(JSON.stringify(data))
         return true
     } catch (error) {
-        console.error("invaluid json:",error)
+        console.error("invalid json:",error)
         return false;        
     }
 }
