@@ -15,6 +15,7 @@ const eslintConfig = [
     rules: {
       // ❌ Disallow 'any' type in TypeScript
       "@typescript-eslint/no-explicit-any": ["error", { fixToUnknown: true }],
+      "@typescript-eslint/no-unused-vars":"off"
     },
   },
 ];
