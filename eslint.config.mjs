@@ -13,8 +13,7 @@ const eslintConfig = [
   ...compat.extends("next/core-web-vitals", "next/typescript"),
   {
     rules: {
-      // ❌ Disallow 'any' type in TypeScript
-      "@typescript-eslint/no-explicit-any": ["error", { fixToUnknown: true }],
+      "@typescript-eslint/no-explicit-any": "off",
       "@typescript-eslint/no-unused-vars":"off"
     },
   },

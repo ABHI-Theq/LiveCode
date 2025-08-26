@@ -9,16 +9,35 @@ interface PlaygroundEditorProps{
   activeFile:TemplateFile | undefined
   content:string,
   onContentChange:(value:string)=>void
+  suggestion:string |null
+  suggestionLoading:boolean
+  suggestionPosition:{line:number,column:number}
+  onAcceptSuggestion:(editor:any,monaco:any)=>void
+  onRejectSuggestion:(editor:any)=>void
+  onTriggerSuggestion:(type:string,editor:any)=>void
 }
 
 const PlaygroundEditor = ({
   activeFile,
   content,
-  onContentChange
+  onContentChange,
+  suggestion,
+  suggestionLoading,
+  suggestionPosition,
+  onAcceptSuggestion,
+  onRejectSuggestion,
+  onTriggerSuggestion
 }:PlaygroundEditorProps) => {
 
   const editorRef=useRef<any>(null)
   const monacoRef=useRef<Monaco | null>(null)
+
+  const inlineCompletionProviderRef = useRef<any>(null)
+  const currentSuggestionRef = useRef<{ text: string; id: string } | null>(null)
+  const isAcceptingSuggestionRef = useRef(false)
+  const suggestionAcceptedRef = useRef(false)
+  const suggestionTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const tabCommandRef = useRef<any>(null)
 
   const handleEditorDidMount=(editor:any,monaco:Monaco)=>{
     monacoRef.current=monaco
