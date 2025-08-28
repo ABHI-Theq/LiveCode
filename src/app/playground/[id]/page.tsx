@@ -452,7 +452,11 @@ const Page = () => {
                                                     }}
                                                     suggestion={aiSuggestion.suggestion}
                                                     suggestionLoading={aiSuggestion.isLoading}
-                                                    suggestionPosition={aiSuggestion.position}
+                                                    suggestionPosition={
+                                                        aiSuggestion.position && typeof aiSuggestion.position.line === "number" && typeof aiSuggestion.position.column === "number"
+                                                            ? aiSuggestion.position
+                                                            : { line: 1, column: 1 }
+                                                    }
                                                     onAcceptSuggestion={(editor,monaco)=>{
                                                         aiSuggestion.acceptSuggestion(editor,monaco)
                                                     }}

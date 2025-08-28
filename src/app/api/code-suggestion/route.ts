@@ -44,7 +44,7 @@ export async function POST(req: NextRequest) {
 
         //calling AI SERVICE
 
-        const suggestion = generateSuggestion(prompt)
+        const suggestion = await generateSuggestion(prompt)
 
         return NextResponse.json({
             suggestion,
@@ -129,7 +129,7 @@ function buildPrompt(context: CodeContext, suggestionType: string): string {
 
 async function generateSuggestion(prompt:string):Promise<string>{
     try {
-        const response=await fetch("/http://localhost:11434/api/generate",{
+        const response=await fetch("http://127.0.0.1:11434/api/generate",{
             method:"POST",
             headers:{"Content-type":"application/json"},
             body:JSON.stringify({
@@ -137,7 +137,7 @@ async function generateSuggestion(prompt:string):Promise<string>{
                 prompt,
                 stream:false,
                 options:{
-                    temprature:0.7,
+                    temperature:0.7,
                     max_tokens:300
                 }
             })
