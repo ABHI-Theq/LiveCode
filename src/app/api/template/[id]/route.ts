@@ -16,13 +16,19 @@ const validateJsonStructure = (data: unknown) => {
     }
 }
 
-// Try multiple possible paths for template files
+// Try multiple possible paths for template files in Vercel
 const getTemplatePath = (templatePath: string) => {
     const possiblePaths = [
+        // Try relative to current working directory
         path.join(process.cwd(), templatePath),
-        path.join(process.cwd(), 'public', templatePath.replace('public/', '')),
-        path.join(process.cwd(), '.next', 'server', 'app', 'api', 'template', templatePath),
+        // Try from the project root (one level up from /var/task)
         path.join(process.cwd(), '..', templatePath),
+        // Try from the project root (two levels up from /var/task)
+        path.join(process.cwd(), '..', '..', templatePath),
+        // Try absolute path from project root
+        path.join('/var/task', '..', templatePath),
+        // Try from the public folder if it exists
+        path.join(process.cwd(), 'public', templatePath),
     ]
     
     console.log('Trying possible paths:', possiblePaths)
