@@ -1,0 +1,14 @@
+name: Push Check
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: "Checking push"
+        run: echo "Some new changes added"
