@@ -3,6 +3,7 @@ import { NextRequest } from 'next/server'
 import { templatePaths } from '../../../../../template'
 import prisma from '@/lib/prisma'
 import { scanTemplateDirectory } from '@/features/playground/lib/path-to-json'
+import fs from 'fs/promises'
 
 export const runtime = 'nodejs'
 
@@ -19,7 +20,7 @@ const validateJsonStructure = (data: unknown) => {
 // Try multiple possible paths for template files in Vercel
 const getTemplatePath = (templatePath: string) => {
     const possiblePaths = [
-        // Try relative to current working directory
+        // Try relative to current working directory (most likely)
         path.join(process.cwd(), templatePath),
         // Try from the project root (one level up from /var/task)
         path.join(process.cwd(), '..', templatePath),
@@ -27,8 +28,10 @@ const getTemplatePath = (templatePath: string) => {
         path.join(process.cwd(), '..', '..', templatePath),
         // Try absolute path from project root
         path.join('/var/task', '..', templatePath),
-        // Try from the public folder if it exists
-        path.join(process.cwd(), 'public', templatePath),
+        // Try from the root of the deployment
+        path.join('/', templatePath),
+        // Try from the current directory without any prefix
+        templatePath,
     ]
     
     console.log('Trying possible paths:', possiblePaths)
@@ -39,6 +42,17 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
     const { id } = await params;
     if (!id) {
         return Response.json({ error: "Missing Playground ID" }, { status: 400 })
+    }
+
+    // Debug: List contents of current working directory
+    try {
+        const cwdContents = await fs.readdir(process.cwd())
+        console.log('=== CONTENTS OF CURRENT WORKING DIRECTORY ===')
+        console.log('Current working directory:', process.cwd())
+        console.log('Contents:', cwdContents)
+        console.log('=== END CONTENTS ===')
+    } catch (error) {
+        console.error('Error reading current directory:', error)
     }
 
     const playground = await prisma.playground.findUnique({
