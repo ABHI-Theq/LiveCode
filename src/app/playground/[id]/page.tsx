@@ -19,7 +19,8 @@ import { TemplateFile } from '@/features/playground/types'
 import WebContainerPreview from '@/features/webcontainer/components/webcontainerPreview'
 import { useWebContainer } from '@/features/webcontainer/hooks/useWebContainer'
 import { TooltipContent } from '@radix-ui/react-tooltip'
-import { AlertCircle, Bot, FileText, Save, Settings, X } from 'lucide-react'
+import { AlertCircle, Bot, FileText, Save, Settings, X, LayoutDashboard } from 'lucide-react'
+import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { toast } from 'sonner'
@@ -324,6 +325,12 @@ const Page = () => {
                                 </p>
                             </div>
                             <div className="flex items-center gap-1">
+                                <Link href="/dashboard">
+                                    <Button size={"sm"} variant={"secondary"} className="gap-2">
+                                        <LayoutDashboard className="size-4" />
+                                        Go to Dashboard
+                                    </Button>
+                                </Link>
                                 <Tooltip>
                                     <TooltipTrigger asChild>
                                         <Button size={"sm"} variant={"outline"} onClick={() => handleSave()}

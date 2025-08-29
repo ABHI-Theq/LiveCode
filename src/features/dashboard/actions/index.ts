@@ -69,7 +69,7 @@ export const deleteProjectById=async (id:string)=>{
         revalidatePath("/dashboard")
     } catch (error) {
      console.error(error)
-     return null   
+        
     }
 }
 
@@ -108,6 +108,5 @@ export const duplicateProjectById=async (id:string)=>{
          return duplicatePlayground
     } catch (error) {
         console.error(error)
-        return null
     }
 }

@@ -44,7 +44,7 @@ interface ProjectTableProps{
     projects: Project[],
     onUpdateProject?: (id: string, data: { title: string; description: string }) => Promise<void> | void,
     onDeleteProject?: (id: string) => Promise<void> | void,
-    onDuplicateProject?: (id: string) => Promise<void> | void,
+    onDuplicateProject?: (id: string) => Promise<unknown> | void,
 
 }
 

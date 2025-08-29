@@ -42,7 +42,7 @@ export const usePlayground=(id:string):UsePlaygroundReturn=>{
                 return                
             }
 
-            const res=await fetch(`api/template/${id}`)
+            const res=await fetch(`/api/template/${id}`)
             if(!res.ok){
                 throw new Error(`Failed to load Content: ${res.status}`)
             }
