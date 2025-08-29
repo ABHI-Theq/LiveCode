@@ -1,0 +1,39 @@
+name: Next.js CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+        matrix:
+            node-version: [18.x,20.x.22.x]
+
+    steps:
+      # Checkout repo
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Setup Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{matrix.node-version}}   # or 20 (Next.js 14+ works fine with 18/20)
+          cache: 'npm'
+
+      # Install dependencies
+      - name: Install dependencies
+        run: npm install
+
+      # Build Next.js app
+      - name: Build Next.js app
+        run: npm run build
+
+      # Run tests (optional)
+      - name: Run tests
+        run: npm run test --if-present
