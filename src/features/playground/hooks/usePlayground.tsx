@@ -32,9 +32,8 @@ export const usePlayground=(id:string):UsePlaygroundReturn=>{
             setIsLoading(true)
             setError(null)
 
-            const data=await getPlaygroundById(id)
-            // @ts-ignore
-            setPlaygroundData(data)     
+            const data = await getPlaygroundById(id)
+            setPlaygroundData(data ? ({ id, ...data } as PlaygroundData) : null)     
             const rawContent=data?.templateFiles?.[0]?.content
             if(typeof rawContent==="string"){
                 const templateData=JSON.parse(rawContent)

@@ -42,7 +42,7 @@ const PlaygroundEditor = ({
   const isAcceptingSuggestionRef = useRef(false)
   const suggestionAcceptedRef = useRef(false)
   const suggestionTimeoutRef = useRef<NodeJS.Timeout | null>(null)
-  const tabCommandRef = useRef<any>(null)
+  const tabCommandRef = useRef<string | null>(null)
 
   const generateSuggestionId = () => `suggestion-${Date.now()}-${Math.random()}`
 
@@ -227,7 +227,8 @@ const PlaygroundEditor = ({
     })
 
     if (tabCommandRef.current) {
-      tabCommandRef.current.dispose()
+      // addCommand returns a command ID string; nothing to dispose
+      tabCommandRef.current = null
     }
 
     tabCommandRef.current = editor.addCommand(monaco.KeyCode.Tab, () => {
@@ -302,7 +303,7 @@ const PlaygroundEditor = ({
   }
   useEffect(() => {
     updateEditorLanguage()
-  }, [activeFile])
+  }, [activeFile,updateEditorLanguage])
 
   useEffect(() => {
     return () => {
@@ -314,7 +315,7 @@ const PlaygroundEditor = ({
         inlineCompletionProviderRef.current = null
       }
       if (tabCommandRef.current) {
-        tabCommandRef.current.dispose()
+        // addCommand returns a command ID string; nothing to dispose
         tabCommandRef.current = null
       }
     }
@@ -342,8 +343,8 @@ const PlaygroundEditor = ({
         onChange={(value) => onContentChange(value || "")}
         onMount={handleEditorDidMount}
         language={activeFile ? getEditorLanguage(activeFile.fileExtension || "") : "plaintext"}
-        //@ts-ignore
-        options={defaultEditorOptions}
+        
+        options={defaultEditorOptions as any}
       />
     </div>
   )

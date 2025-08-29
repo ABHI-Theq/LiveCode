@@ -1,7 +1,7 @@
 interface TemplateItem {
-    filename: string;
-    fileExtension: string;
-    content: string;
+    filename?: string;
+    fileExtension?: string;
+    content?: string;
     folderName?: string;
     items?: TemplateItem[];
   }
@@ -40,7 +40,7 @@ interface TemplateItem {
         // This is a file
         return {
           file: {
-            contents: item.content
+            contents: item.content ?? ""
           }
         };
       }

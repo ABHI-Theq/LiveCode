@@ -42,9 +42,9 @@ import { Project } from "@/features/dashboard/types"
 
 interface ProjectTableProps{
     projects: Project[],
-    onUpdateProject:Function,
-    onDeleteProject:Function,
-    onDuplicateProject:Function,
+    onUpdateProject?: (id: string, data: { title: string; description: string }) => Promise<void> | void,
+    onDeleteProject?: (id: string) => Promise<void> | void,
+    onDuplicateProject?: (id: string) => Promise<void> | void,
 
 }
 
@@ -300,7 +300,7 @@ const ProjectTable = ({projects,onDeleteProject,onUpdateProject,onDuplicateProje
           Delete Project
         </AlertDialogTitle>
         <AlertDialogDescription>
-          Are you sure you want to delete "{<span className="font-bold">{selectedProject?.title}</span>}"?.This action can not be undone later.All data related to this project will be removed.
+          Are you sure you want to delete &quot;{<span className="font-bold">{selectedProject?.title}</span>}&quot;? This action cannot be undone later. All data related to this project will be removed.
         </AlertDialogDescription>
       </AlertDialogHeader>
       <AlertDialogFooter>

@@ -58,8 +58,7 @@ const Page = () => {
         instance,
         writeFileSync,
         destroy
-        // @ts-ignore
-    } = useWebContainer({ templateData })
+    } = useWebContainer({ templateData: templateData ?? ({} as TemplateFolder) })
 
     const lastSyncedContent = useRef<Map<string, string>>(new Map());
     useEffect(() => {
@@ -163,11 +162,10 @@ const Page = () => {
                 const updatedTemplateData = JSON.parse(
                     JSON.stringify(latestTemplateData)
                 );
-                //@ts-ignore
-                const updateFileContent = (items: any[]) =>
+                const applyContentUpdate = (items: any[]): any[] =>
                     items.map((item) => {
                         if ("folderName" in item) {
-                            return { ...item, items: updateFileContent(item.items) };
+                            return { ...item, items: applyContentUpdate(item.items) };
                         } else if (
                             item.filename === fileToSave.filename &&
                             item.fileExtension === fileToSave.fileExtension
@@ -176,7 +174,7 @@ const Page = () => {
                         }
                         return item;
                     });
-                updatedTemplateData.items = updateFileContent(
+                updatedTemplateData.items = applyContentUpdate(
                     updatedTemplateData.items
                 );
 

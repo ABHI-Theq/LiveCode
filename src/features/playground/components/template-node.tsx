@@ -188,7 +188,7 @@ const TemplateNode = ({
             <AlertDialogHeader>
               <AlertDialogTitle>Delete File</AlertDialogTitle>
               <AlertDialogDescription>
-                Are you sure you want to delete "{fileName}"? This action cannot be undone.
+                Are you sure you want to delete &quot;{fileName}&quot;? This action cannot be undone.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
@@ -357,7 +357,7 @@ const TemplateNode = ({
                         <AlertDialogHeader>
                             <AlertDialogTitle>Delete Folder</AlertDialogTitle>
                             <AlertDialogDescription>
-                                Are you sure you want to delete "{folderName}" and all its contents? This action cannot be undone.
+                                Are you sure you want to delete &quot;{folderName}&quot; and all its contents? This action cannot be undone.
                             </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>
