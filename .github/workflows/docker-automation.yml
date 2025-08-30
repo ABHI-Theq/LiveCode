@@ -1,0 +1,26 @@
+name: Docker-build-push
+
+on:
+    push:
+        branches:
+            - main
+    pull_request:
+        branches:
+            - main
+
+jobs:
+    docker-build:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: checkout
+              uses: actions/checkout@v4
+
+            - name: building docker image
+              run: docker build . -t abhitheq/livecode
+               echo "${{secrets.DOCKERHUB_PASSKEY}} |docker login -u ${{secrets.DOCKERHUB_USERNAME}} --password-stdin"
+            
+            - name: deploying docker image to dockerhub
+              run: docker push abhitheq/livecode:latest
+
+
