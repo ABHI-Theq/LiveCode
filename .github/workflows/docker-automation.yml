@@ -18,7 +18,9 @@ jobs:
 
             - name: building docker image
               run: docker build . -t abhitheq/livecode
-               echo "${{secrets.DOCKERHUB_PASSKEY}} |docker login -u ${{secrets.DOCKERHUB_USERNAME}} --password-stdin"
+            
+            - name: accessing dockerhub
+              run: echo "${{secrets.DOCKERHUB_PASSKEY}} |docker login -u ${{secrets.DOCKERHUB_USERNAME}} --password-stdin"
             
             - name: deploying docker image to dockerhub
               run: docker push abhitheq/livecode:latest
