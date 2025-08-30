@@ -2,6 +2,7 @@ import DashboardSidebar from "@/components/DashboardSidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { getAllPlaygroundForUser } from "@/features/dashboard/actions";
 
+
 const DashboardLayout=async ({children}:{children:React.ReactNode})=>{
     
     const playgroundData=await getAllPlaygroundForUser()
@@ -15,7 +16,7 @@ const DashboardLayout=async ({children}:{children:React.ReactNode})=>{
         ANGULAR:"Terminal"
     }
 
-    const formattedPlaygroundData=playgroundData?.map((playground)=>({
+    const formattedPlaygroundData=playgroundData?.map((playground:any)=>({
         id:playground.id,
         name:playground.title,
         starred:playground.starmark?.[0]?.isMarked || false,
