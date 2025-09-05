@@ -23,7 +23,7 @@ jobs:
 
       # Setup Node.js
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v3
         with:
           node-version: ${{matrix.node-version}}   # or 20 (Next.js 14+ works fine with 18/20)
           cache: 'npm'
