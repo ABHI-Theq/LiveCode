@@ -36,8 +36,7 @@ client_secret_*.json
 .vercel
 
 
-.env.local
-.env
+.env*
 
 
 # typescript
