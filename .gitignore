@@ -37,6 +37,7 @@ client_secret_*.json
 
 
 .env*
+.env
 
 
 # typescript
