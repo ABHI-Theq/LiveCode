@@ -3,7 +3,7 @@
   "version": 2,
   "name": "livecode",
   "framework": "nextjs",
-  "buildCommand": "next build",
+  "buildCommand": "npm run build",
   "installCommand": "npm install",
   "outputDirectory": ".next",
   "regions": ["bom1"],
