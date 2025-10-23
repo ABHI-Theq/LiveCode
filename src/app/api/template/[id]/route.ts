@@ -1,7 +1,7 @@
 import path from 'path'
 import fs from 'fs/promises'
 import { NextRequest  } from 'next/server'
-import { templatePaths } from '../../../../features/template'
+import { templatePaths } from '../../../../template'
 import prisma from '@/lib/prisma'
 import { readTemplateStructureFromJson, saveTemplateStructureToJson } from '@/features/playground/lib/path-to-json'
 import { success } from 'zod'
@@ -37,7 +37,7 @@ export async function GET(req:NextRequest,{params}:{params:Promise<{id:string}>}
 
      try {
         const inputPath=path.join(process.cwd(),templatePath)
-        const outputPath=path.join(process.cwd(),`output/${templateKey}.json`)
+        const outputPath=path.join('/tmp',`${templateKey}.json`)
 
         await saveTemplateStructureToJson(inputPath,outputPath)
 
@@ -50,8 +50,9 @@ export async function GET(req:NextRequest,{params}:{params:Promise<{id:string}>}
         await fs.unlink(outputPath)
         return Response.json({success:true,templateJson:result},{status:200})
      } catch (error) {
+        const errMsg=error instanceof Error?error.message:"Error while fetching template file"
         return Response.json(
-            {error:"Failed to generate template"},
+            {error:"Failed to generate template",details:errMsg},
             {
                 status:500
             }
