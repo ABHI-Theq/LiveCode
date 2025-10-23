@@ -1,7 +1,7 @@
 import path from 'path'
 import fs from 'fs/promises'
 import { NextRequest  } from 'next/server'
-import { templatePaths } from '../../../../../template'
+import { templatePaths } from '../../../../features/template'
 import prisma from '@/lib/prisma'
 import { readTemplateStructureFromJson, saveTemplateStructureToJson } from '@/features/playground/lib/path-to-json'
 import { success } from 'zod'

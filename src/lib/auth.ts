@@ -17,24 +17,28 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
           data: {
             email: user.email!,
             name: user.name,
-            image: user.image,
             accounts: {
               create: {
                 provider: account.provider,
                 providerAccountId: account.providerAccountId,
                 type: account.type,
-                refresh_token: account.refresh_token,
-                access_token: account.access_token,
-                expires_at: account.expires_at,
-                token_type: account.token_type,
-                scope: account.scope,
-                id_token: account.id_token,
-                session_state: JSON.stringify(account.session_state),
+                access_token: account.access_token ?? null,
+                refresh_token: account.refresh_token ?? null,
+                expires_at: account.expires_at
+                  ? Math.floor(account.expires_at)
+                  : null,
+                token_type: account.token_type ?? null,
+                scope: account.scope ?? null,
+                id_token: account.id_token ?? null,
+                session_state: account.session_state
+                  ? String(account.session_state)
+                  : null,
               },
             },
           },
         });
         if (!newUser) return false;
+        
       } else {
         const existingAccount = await prisma.account.findUnique({
           where: {
@@ -43,33 +47,32 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
               providerAccountId: account.providerAccountId,
             },
           },
-        })
+        });
         if (!existingAccount) {
-            await prisma.account.create({
-              data: {
-                provider: account.provider,
-                providerAccountId: account.providerAccountId,
-                type: account.type,
-                refresh_token: account.refresh_token,
-                access_token: account.access_token,
-                expires_at: account.expires_at,
-                token_type: account.token_type,
-                scope: account.scope,
-                id_token: account.id_token,
-                session_state: JSON.stringify(account.session_state),
-                userId: existingUser.id, // Link to existing user
-              },
-        })
-            
+          await prisma.account.create({
+            data: {
+              provider: account.provider,
+              providerAccountId: account.providerAccountId,
+              type: account.type,
+              refresh_token: account.refresh_token,
+              access_token: account.access_token,
+              expires_at: account.expires_at,
+              token_type: account.token_type,
+              scope: account.scope,
+              id_token: account.id_token,
+              session_state: JSON.stringify(account.session_state),
+              userId: existingUser.id, // Link to existing user
+            },
+          });
+        }
       }
-    }
-        return true;
+      return true;
     },
-     async jwt({ token, user, account }) {
-      if(!token.sub) return token;
-      const existingUser = await getUserbyId(token.sub)
+    async jwt({ token, user, account }) {
+      if (!token.sub) return token;
+      const existingUser = await getUserbyId(token.sub);
 
-      if(!existingUser) return token;
+      if (!existingUser) return token;
 
       const exisitingAccount = await getAccountsByUserId(existingUser.id);
 
@@ -79,17 +82,17 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
 
       return token;
     },
-     async session({ session, token }) {
+    async session({ session, token }) {
       // Attach the user ID from the token to the session
-    if(token.sub  && session.user){
-      session.user.id = token.sub
-    } 
+      if (token.sub && session.user) {
+        session.user.id = token.sub;
+      }
 
-    if(token.sub && session.user){
-      session.user.role = token.role
-    }
+      if (token.sub && session.user) {
+        session.user.role = token.role;
+      }
 
-    return session;
+      return session;
     },
   },
   secret: process.env.AUTH_SECRET,
