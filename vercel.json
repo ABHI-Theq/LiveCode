@@ -6,7 +6,6 @@
   "buildCommand": "next build",
   "installCommand": "npm install",
   "outputDirectory": ".next",
-  "public": "public",
   "regions": ["bom1"],
 
   "functions": {
