@@ -3,7 +3,7 @@
   "version": 2,
   "name": "livecode",
   "framework": "nextjs",
-  "buildCommand": "npm run build",
+  "buildCommand": "next build",
   "installCommand": "npm install",
   "outputDirectory": ".next",
   "regions": ["bom1"],
@@ -19,28 +19,12 @@
     }
   },
 
-  "builds": [
-    {
-      "src": "package.json",
-      "use": "@vercel/node",
-      "config": {
-        "includeFiles": ["LiveCode-starters/**/*"]
-      }
-    }
-  ],
-
   "headers": [
     {
       "source": "/(.*)",
       "headers": [
-        {
-          "key": "Cross-Origin-Opener-Policy",
-          "value": "same-origin"
-        },
-        {
-          "key": "Cross-Origin-Embedder-Policy",
-          "value": "require-corp"
-        }
+        { "key": "Cross-Origin-Opener-Policy", "value": "same-origin" },
+        { "key": "Cross-Origin-Embedder-Policy", "value": "require-corp" }
       ]
     }
   ],
