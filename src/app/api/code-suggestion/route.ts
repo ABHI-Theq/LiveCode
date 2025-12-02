@@ -35,17 +35,22 @@ export async function POST(req: NextRequest) {
             })
         }
 
-        // Check if Ollama is available
-        const ollamaStatus = await checkOllamaAvailability();
-        if (!ollamaStatus.available) {
-            return NextResponse.json({ 
-                success: false, 
-                error: "Ollama not available",
-                message: ollamaStatus.error || "Ollama is not running. Please start Ollama to use AI suggestions.",
-                ollamaStatus: ollamaStatus
-            }, {
-                status: 503 // Service Unavailable
-            })
+        // Check if Ollama is available (only in development or if explicitly enabled)
+        // In production, we skip this check to avoid blocking
+        const isProduction = process.env.NODE_ENV === 'production';
+        
+        if (!isProduction) {
+            const ollamaStatus = await checkOllamaAvailability();
+            if (!ollamaStatus.available) {
+                return NextResponse.json({ 
+                    success: false, 
+                    error: "Ollama not available",
+                    message: ollamaStatus.error || "Ollama is not running. Please start Ollama to use AI suggestions.",
+                    ollamaStatus: ollamaStatus
+                }, {
+                    status: 503 // Service Unavailable
+                })
+            }
         }
 
         const context = analyzeContext(fileContent, cursorLine, cursorColumn, fileName);

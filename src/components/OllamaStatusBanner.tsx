@@ -18,10 +18,17 @@ export function OllamaStatusBanner() {
   const [dismissed, setDismissed] = useState(false);
 
   useEffect(() => {
-    checkOllama();
-    // Check every 30 seconds
-    const interval = setInterval(checkOllama, 30000);
-    return () => clearInterval(interval);
+    // Only check Ollama in development (localhost)
+    // In production, Ollama won't be accessible from browser
+    if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
+      checkOllama();
+      // Check every 30 seconds
+      const interval = setInterval(checkOllama, 30000);
+      return () => clearInterval(interval);
+    } else {
+      // In production, don't show banner (Ollama is server-side only)
+      setStatus({ available: true, checking: false });
+    }
   }, []);
 
   async function checkOllama() {

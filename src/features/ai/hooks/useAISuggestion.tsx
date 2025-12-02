@@ -28,19 +28,29 @@ export const useAISuggestion = (): UseAISuggestionReturn => {
         ollamaAvailable: true
     });
 
-    // Check Ollama availability on mount
+    // Check Ollama availability on mount (only in development)
     useEffect(() => {
         const checkOllama = async () => {
-            const status = await checkOllamaAvailability();
-            if (!status.available) {
-                console.warn('⚠️ Ollama not available:', status.error);
-                setState(prev => ({
-                    ...prev,
-                    isEnabled: false,
-                    ollamaAvailable: false
-                }));
+            // Only check from client in development
+            // In production, Ollama check happens server-side in API route
+            if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
+                const status = await checkOllamaAvailability();
+                if (!status.available) {
+                    console.warn('⚠️ Ollama not available:', status.error);
+                    setState(prev => ({
+                        ...prev,
+                        isEnabled: false,
+                        ollamaAvailable: false
+                    }));
+                } else {
+                    console.log('✅ Ollama is available');
+                    setState(prev => ({
+                        ...prev,
+                        ollamaAvailable: true
+                    }));
+                }
             } else {
-                console.log('✅ Ollama is available');
+                // In production, assume available (will be checked server-side)
                 setState(prev => ({
                     ...prev,
                     ollamaAvailable: true

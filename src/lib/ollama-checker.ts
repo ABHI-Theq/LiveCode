@@ -11,8 +11,17 @@ export interface OllamaStatus {
 
 /**
  * Check if Ollama is available and running
+ * Note: This should only be called from server-side or localhost
  */
 export async function checkOllamaAvailability(): Promise<OllamaStatus> {
+  // Don't check from browser in production
+  if (typeof window !== 'undefined' && window.location.hostname !== 'localhost') {
+    return {
+      available: true, // Assume available, will be checked server-side
+      version: 'unknown',
+    };
+  }
+
   try {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 3000); // 3 second timeout
