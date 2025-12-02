@@ -1,0 +1,3 @@
+# This file tells Next.js file tracing what to include
+# Empty file means don't ignore anything extra
+# LiveCode-starters will be included by default

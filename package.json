@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
+    "vercel-build": "next build && node scripts/copy-templates-vercel.js",
     "postbuild": "node scripts/copy-templates.js",
     "start": "next start",
     "lint": "next lint"
