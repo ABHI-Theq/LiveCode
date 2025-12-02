@@ -8,11 +8,7 @@
   "regions": ["bom1"],
 
   "functions": {
-    "app/api/template/[id]/route.ts": {
-      "maxDuration": 30,
-      "includeFiles": "LiveCode-starters/**"
-    },
-    ".next/server/app/api/template/[id]/route.js": {
+    "api/template/**": {
       "maxDuration": 30,
       "includeFiles": "LiveCode-starters/**"
     }
