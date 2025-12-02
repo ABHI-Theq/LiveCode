@@ -1,6 +1,5 @@
-import { metadata } from "@/app/layout";
 import { type NextRequest, NextResponse } from "next/server";
-import { extname } from "path";
+import { checkOllamaAvailability } from "@/lib/ollama-checker";
 
 
 interface CodeSuggestionRequest {
@@ -33,6 +32,19 @@ export async function POST(req: NextRequest) {
         if (!fileContent || cursorLine < 0 || !suggestionType) {
             return NextResponse.json({ success: false, error: "Invalid Input Paramters" }, {
                 status: 400
+            })
+        }
+
+        // Check if Ollama is available
+        const ollamaStatus = await checkOllamaAvailability();
+        if (!ollamaStatus.available) {
+            return NextResponse.json({ 
+                success: false, 
+                error: "Ollama not available",
+                message: ollamaStatus.error || "Ollama is not running. Please start Ollama to use AI suggestions.",
+                ollamaStatus: ollamaStatus
+            }, {
+                status: 503 // Service Unavailable
             })
         }
 
@@ -233,10 +245,3 @@ function detectInFunction(lines: string[], currentLine: number): boolean {
     return patterns
   }
   
-  function getLastNonEmptyLine(lines: string[], currentLine: number): string {
-    for (let i = currentLine - 1; i >= 0; i--) {
-      const line = lines[i]
-      if (line.trim() !== "") return line
-    }
-    return ""
-  }

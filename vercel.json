@@ -8,9 +8,9 @@
   "regions": ["bom1"],
 
   "functions": {
-    "src/app/api/**/*.ts": {
+    "src/app/api/template/[id]/route.ts": {
       "maxDuration": 30,
-      "includeFiles": "LiveCode-starters/**/*"
+      "includeFiles": "LiveCode-starters/**"
     }
   },
 

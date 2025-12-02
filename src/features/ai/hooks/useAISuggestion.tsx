@@ -1,10 +1,13 @@
 import { useState, useEffect, useCallback } from "react";
+import { checkOllamaAvailability } from "@/lib/ollama-checker";
+
 interface AISuggestionState {
     suggestion: string | null,
     isLoading: boolean,
     position: { line: number, column: number } | null,
     decoration: string[],
-    isEnabled: boolean
+    isEnabled: boolean,
+    ollamaAvailable: boolean
 }
 
 interface UseAISuggestionReturn extends AISuggestionState {
@@ -21,11 +24,42 @@ export const useAISuggestion = (): UseAISuggestionReturn => {
         isLoading: false,
         position: null,
         decoration: [],
-        isEnabled: true
+        isEnabled: true,
+        ollamaAvailable: true
     });
 
+    // Check Ollama availability on mount
+    useEffect(() => {
+        const checkOllama = async () => {
+            const status = await checkOllamaAvailability();
+            if (!status.available) {
+                console.warn('⚠️ Ollama not available:', status.error);
+                setState(prev => ({
+                    ...prev,
+                    isEnabled: false,
+                    ollamaAvailable: false
+                }));
+            } else {
+                console.log('✅ Ollama is available');
+                setState(prev => ({
+                    ...prev,
+                    ollamaAvailable: true
+                }));
+            }
+        };
+
+        checkOllama();
+    }, []);
+
     const toggleEnabled = useCallback(() => {
-        setState(prev => ({ ...prev, isEnabled: !prev.isEnabled }));
+        setState(prev => {
+            // Don't allow enabling if Ollama is not available
+            if (!prev.ollamaAvailable && !prev.isEnabled) {
+                console.warn('⚠️ Cannot enable AI: Ollama is not available');
+                return prev;
+            }
+            return { ...prev, isEnabled: !prev.isEnabled };
+        });
     }, []);
 
     const fetchSuggestion = useCallback(async (type: string, editor: any) => {
@@ -69,6 +103,18 @@ export const useAISuggestion = (): UseAISuggestionReturn => {
                     })
 
                     if (!res.ok) {
+                        // Check if it's an Ollama availability error
+                        if (res.status === 503) {
+                            const errorData = await res.json();
+                            console.error('❌ Ollama not available:', errorData.message);
+                            setState((prev) => ({
+                                ...prev,
+                                isLoading: false,
+                                isEnabled: false,
+                                ollamaAvailable: false
+                            }));
+                            return;
+                        }
                         throw new Error(`API request failed with status ${res.status}`);
                     }
 

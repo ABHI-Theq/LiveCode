@@ -11,6 +11,7 @@ import { useAISuggestion } from '@/features/ai/hooks/useAISuggestion'
 import PlaygroundEditor from '@/features/playground/components/playground-editor'
 import TemplateFileTree from '@/features/playground/components/template-file-tree'
 import ToggleAI from '@/features/playground/components/toggle-ai'
+import { OllamaStatusBanner } from '@/components/OllamaStatusBanner'
 import { useFileExplorer } from '@/features/playground/hooks/useFileExplorer'
 import { usePlayground } from '@/features/playground/hooks/usePlayground'
 import { findFilePath } from '@/features/playground/lib'
@@ -311,6 +312,11 @@ const Page = () => {
                     onRenameFolder={wrappedHandleRenameFolder}
                 />
                 <SidebarInset>
+                    {/* Ollama Status Banner */}
+                    <div className="px-4 pt-4">
+                        <OllamaStatusBanner />
+                    </div>
+                    
                     <header className="flex h-16 items-center gap-2 border-b px-4 shrink-0">
                         <SidebarTrigger className='-ml-1' />
                         <Separator className='mr-2 h-4' orientation='vertical' />

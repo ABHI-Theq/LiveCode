@@ -36,8 +36,31 @@ export async function GET(req:NextRequest,{params}:{params:Promise<{id:string}>}
      const templatePath=templatePaths[templateKey]
 
      try {
-        const inputPath=path.join(process.cwd(),templatePath)
-        const outputPath=path.join('/tmp',`${templateKey}.json`)
+        // Handle both local development and Vercel deployment
+        const inputPath = path.join(process.cwd(), templatePath)
+        
+        // Use /tmp for Vercel, local temp for development
+        const outputPath = process.env.VERCEL 
+            ? path.join('/tmp', `${templateKey}-${Date.now()}.json`)
+            : path.join(process.cwd(), '.next', `${templateKey}.json`)
+
+        // Log paths for debugging
+        console.log('Template loading:', {
+            templateKey,
+            templatePath,
+            inputPath,
+            outputPath,
+            cwd: process.cwd(),
+            isVercel: !!process.env.VERCEL
+        })
+
+        // Check if input path exists
+        try {
+            await fs.access(inputPath)
+        } catch (error) {
+            console.error('Template path not accessible:', inputPath)
+            throw new Error(`Template not found at: ${inputPath}`)
+        }
 
         await saveTemplateStructureToJson(inputPath,outputPath)
 
